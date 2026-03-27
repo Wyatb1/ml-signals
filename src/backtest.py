@@ -26,9 +26,9 @@ def compute_pnl(feat: pd.DataFrame, models: list, n_train: int = 504, n_test: in
         # P&L : signal × return réel du lendemain
         # log_ret contient déjà le return de CE jour
         # on veut le return du jour SUIVANT dans le test set
-        returns     = test['log_ret'].values
-
-        pnl_daily   = signal * returns
+        # Le return du lendemain : on décale d'un jour vers le futur
+        returns   = test['log_ret'].shift(-1).fillna(0).values
+        pnl_daily = signal * returns
 
         df_pnl = pd.DataFrame({
             'date'      : test.index,
